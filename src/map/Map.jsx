@@ -7,7 +7,7 @@ const Map = () => {
   return (
     <>
       <MapContainer 
-        center={[37.0902, -95.7129]} 
+        center={[45.508888, -73.561668]} 
         zoom={3} 
         zoomControl={false} 
         style={{ height: '100vh', width: '100%' }}
