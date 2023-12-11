@@ -55,34 +55,27 @@ const Layers = () => {
             url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
           />
         </LayersControl.BaseLayer>
-        {borderData.map((data) => {
-          //const geojson = data.features[0].geometry
-          //const route_name = data.features[0].properties.headsign + " - " + data.features[0].properties.route_name
-
-          let itemList=[];
-          data.features.forEach( (feature) => {
-                  const geojson = feature.geometry
-                  const route_name = feature.properties.headsign + " - " + feature.properties.route_name
-                  itemList.push(
-                      <>
-                      <LayersControl.Overlay checked name={route_name}>
-                        <LayerGroup>
-                          <GeoJSON 
-                            key={route_name} 
-                            data={geojson} 
-                            pathOptions={{ color: 'blue' }}
-                            eventHandlers={{
-                              mouseover: (event, type) => onMouseEvent(event, 'over'),
-                              mouseout: (event, type) => onMouseEvent(event, 'out'),
-                            }}
-                          >
-                          </GeoJSON>
-                      </LayerGroup>
-                    </LayersControl.Overlay>
-                    </>)
-          }
+        {borderData.map((data, index) => {
+          const geojson = data.features[index].geometry
+          const route_name = data.features[index].properties.headsign + " - " + data.features[index].properties.route_name
+          
           return (
-              {itemList}     
+            <>
+              <LayersControl.Overlay checked name={route_name}>
+                <LayerGroup>
+                <GeoJSON 
+                  key={route_name} 
+                  data={geojson} 
+                  pathOptions={{ color: 'blue' }}
+                  eventHandlers={{
+                    mouseover: (event, type) => onMouseEvent(event, 'over'),
+                    mouseout: (event, type) => onMouseEvent(event, 'out'),
+                  }}
+                >
+                </GeoJSON>
+                </LayerGroup>
+              </LayersControl.Overlay>
+            </>
           )
         })}
       </LayersControl>
