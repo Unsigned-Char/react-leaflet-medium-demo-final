@@ -55,9 +55,7 @@ const Layers = () => {
             url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
           />
         </LayersControl.BaseLayer>
-        {borderData.map((data, index) => {
-          const geojson = data.features[index].geometry
-          const route_name = data.features[index].properties.headsign + " - " + data.features[index].properties.route_name
+        {borderData.map((data) => {
 
           let itemList=[];
           data.features.forEach( (feature) => {
