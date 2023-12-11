@@ -56,26 +56,33 @@ const Layers = () => {
           />
         </LayersControl.BaseLayer>
         {borderData.map((data) => {
-          const geojson = data.features[0].geometry
-          const route_name = data.features[0].properties.headsign + data.features[0].properties.route_name
-          
+          //const geojson = data.features[0].geometry
+          //const route_name = data.features[0].properties.headsign + " - " + data.features[0].properties.route_name
+
+          let itemList=[];
+          data.features.forEach( (feature) => {
+                  const geojson = feature.geometry
+                  const route_name = feature.properties.headsign + " - " + feature.properties.route_name
+                  itemList.push(
+                      <>
+                      <LayersControl.Overlay checked name={route_name}>
+                        <LayerGroup>
+                          <GeoJSON 
+                            key={route_name} 
+                            data={geojson} 
+                            pathOptions={{ color: 'blue' }}
+                            eventHandlers={{
+                              mouseover: (event, type) => onMouseEvent(event, 'over'),
+                              mouseout: (event, type) => onMouseEvent(event, 'out'),
+                            }}
+                          >
+                          </GeoJSON>
+                      </LayerGroup>
+                    </LayersControl.Overlay>)
+                    </>          
+          }
           return (
-            <>
-              <LayersControl.Overlay checked name={route_name}>
-                <LayerGroup>
-                <GeoJSON 
-                  key={route_name} 
-                  data={geojson} 
-                  pathOptions={{ color: 'blue' }}
-                  eventHandlers={{
-                    mouseover: (event, type) => onMouseEvent(event, 'over'),
-                    mouseout: (event, type) => onMouseEvent(event, 'out'),
-                  }}
-                >
-                </GeoJSON>
-                </LayerGroup>
-              </LayersControl.Overlay>
-            </>
+              {itemList}     
           )
         })}
       </LayersControl>
