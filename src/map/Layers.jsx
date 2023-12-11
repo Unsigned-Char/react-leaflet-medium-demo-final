@@ -62,7 +62,7 @@ const Layers = () => {
                   const geojson = feature.geometry
                   const route_name = feature.properties.headsign + " - " + feature.properties.route_name
                   itemList.push(
-                      <>
+ 
                       <LayersControl.Overlay checked name={route_name}>
                         <LayerGroup>
                           <GeoJSON 
@@ -77,11 +77,13 @@ const Layers = () => {
                           </GeoJSON>
                       </LayerGroup>
                     </LayersControl.Overlay>
-                    </>)
+                    )
           })
           
           return (
-            {itemList}
+            <>
+                       {itemList}
+            </>
           )
         })}
       </LayersControl>
