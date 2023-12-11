@@ -11,9 +11,9 @@ import {
 import L from 'leaflet'
 import { Typography, Divider } from '@material-ui/core'
 import WY from '../data/Wyoming.json'
-import MT from '../data/Montana.json'
-import ND from '../data/NorthDakota.json'
-import SD from '../data/SouthDakota.json'
+//import MT from '../data/Montana.json'
+//import ND from '../data/NorthDakota.json'
+//import SD from '../data/SouthDakota.json'
 
 const Layers = () => {
   const [borderData, setBorderData] = useState([ND, MT, SD, WY])
@@ -29,14 +29,14 @@ const Layers = () => {
 
   const getMarkerPosition = (state_name) => {
     switch (state_name) {
-      case 'Montana':
-        return L.latLng(46.8797, -110.3626)
+//      case 'Montana':
+//        return L.latLng(46.8797, -110.3626)
       case 'Wyoming':
-        return L.latLng(43.0760, -107.2903)
-      case 'North Dakota':
-        return L.latLng(47.5515, -101.0020)
-      case 'South Dakota':
-        return L.latLng(43.9695, -99.9018)
+        return L.latLng(45.508888, -73.561668)
+//      case 'North Dakota':
+//        return L.latLng(47.5515, -101.0020)
+//      case 'South Dakota':
+//        return L.latLng(43.9695, -99.9018)
       default: return
     }
   }
