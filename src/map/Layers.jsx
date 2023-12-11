@@ -78,8 +78,8 @@ const Layers = () => {
                           >
                           </GeoJSON>
                       </LayerGroup>
-                    </LayersControl.Overlay>)
-                    </>          
+                    </LayersControl.Overlay>
+                    </>)
           }
           return (
               {itemList}     
