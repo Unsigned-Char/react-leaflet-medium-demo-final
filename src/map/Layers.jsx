@@ -71,14 +71,14 @@ const Layers = () => {
         </LayersControl.BaseLayer>
         {borderData.map((data) => {
           const geojson = data.features[0].geometry
-          const state_name = data.features[0].properties.display_name.split(',')[0]
+          const route_name = data.features[0].properties.route_name.split(',')[0]
           
           return (
             <>
-              <LayersControl.Overlay checked name={state_name}>
+              <LayersControl.Overlay checked name={route_name}>
                 <LayerGroup>
                 <GeoJSON 
-                  key={state_name} 
+                  key={route_name} 
                   data={geojson} 
                   pathOptions={{ color: 'blue' }}
                   eventHandlers={{
