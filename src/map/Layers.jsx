@@ -7,12 +7,11 @@ import {
   LayersControl,
   LayerGroup,
   GeoJSON, 
-  Marker, 
-  Popup 
+  Marker
 } from 'react-leaflet'
 import L from 'leaflet'
 import { Typography, Divider } from '@material-ui/core'
-import STM from '../STMLines.json'
+import STM from '../data/STMLines.json'
 //import MT from '../data/Montana.json'
 //import ND from '../data/NorthDakota.json'
 //import SD from '../data/SouthDakota.json'
