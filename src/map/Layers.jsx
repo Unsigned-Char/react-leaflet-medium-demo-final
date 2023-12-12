@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { Popup } from 'semantic-ui-react'
+import 'semantic-ui-css/semantic.min.css'
 import { 
   useMapEvents, 
   TileLayer, 
@@ -17,6 +19,9 @@ import STM from '../STMLines.json'
 
 const Layers = () => {
   const [borderData, setBorderData] = useState([STM])
+  const [popupContent, setPopupContent] = useState('')
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [popupOpen, setPopupOpen] = useState(false)
 
   const map = useMapEvents({
     zoomend: () => {
@@ -27,13 +32,23 @@ const Layers = () => {
     }
   })
 
-  const onMouseEvent = (event, type) => {
-    switch (type) {
+
+
+  const onMouseEvent = (event, arg) => {
+    switch (args.type) {
       case 'over':
         event.target.setStyle({ fillOpacity: 0.5 })
+        setPopupContent(args.routeName)
+  
+        // Set the position of the popup to the cursor
+        setPosition({ x: event.clientX, y: event.clientY })
+    
+        // Open the popup
+        setPopupOpen(true)
         break
       case 'out':
         event.target.setStyle({ fillOpacity: 0.0 })
+        setPopupOpen(false)
         break
       default:
         break
@@ -57,26 +72,46 @@ const Layers = () => {
         </LayersControl.BaseLayer>
         {borderData.map((data) => {
 
-          let itemList=[];
+          let itemList=[]
           data.features.forEach( (feature) => {
                   const geojson = feature.geometry
-                  const route_name = feature.properties.headsign + " - " + feature.properties.route_name
+                  const overlay_name = feature.properties.headsign + " - " + feature.properties.route_name
+                  const route_name = feature.properties.route_name
+                  const color = (route_name) => { 
+                    switch (true)
+                    {
+                       case /blue/i.test(feature.properties.route_name): return 'blue'
+                       case /blue/i.test(feature.properties.route_name): return 'orange'
+                       case /blue/i.test(feature.properties.route_name): return 'yellow'
+                       case /blue/i.test(feature.properties.route_name): return 'green'
+                       default:
+                        return '#6699CC' // blue-gray
+                    }
+                  }
+                  
                   itemList.push(
- 
-                      <LayersControl.Overlay checked name={route_name}>
+                    <Popup
+                    content={popupContent}
+                    position="top center"
+                    open={popupOpen}
+                    style={{ position: 'absolute', top: position.y, left: position.x }}
+                    >
+             
+                      <LayersControl.Overlay checked name={overlay_name}>
                         <LayerGroup>
                           <GeoJSON 
-                            key={route_name} 
+                            key={overlay_name} 
                             data={geojson} 
-                            pathOptions={{ color: 'blue' }}
+                            pathOptions={{ color: {color} }}
                             eventHandlers={{
-                              mouseover: (event, type) => onMouseEvent(event, 'over'),
-                              mouseout: (event, type) => onMouseEvent(event, 'out'),
+                              mouseover: (event, type, route_name) => onMouseEvent(event, 'over', route_name),
+                              mouseout: (event, type, route_name) => onMouseEvent(event, 'out', route_name),
                             }}
                           >
                           </GeoJSON>
                       </LayerGroup>
                     </LayersControl.Overlay>
+                    </Popup>
                     )
           })
           
@@ -92,3 +127,5 @@ const Layers = () => {
 }
 
 export default Layers
+
+
