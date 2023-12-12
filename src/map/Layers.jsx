@@ -1,26 +1,33 @@
 import React, { useState } from 'react'
-import { Popup } from 'semantic-ui-react'
-import 'semantic-ui-css/semantic.min.css'
+//import { useEffect } from 'react';
 import { 
   useMapEvents, 
   TileLayer, 
   LayersControl,
-  LayerGroup,
-  GeoJSON, 
-  Marker
+  FeatureGroup,
+  GeoJSON,
+  Tooltip
 } from 'react-leaflet'
-import L from 'leaflet'
-import { Typography, Divider } from '@material-ui/core'
+//import { Typography, Divider } from '@material-ui/core'
 import STM from '../data/STMLines.json'
-//import MT from '../data/Montana.json'
-//import ND from '../data/NorthDakota.json'
-//import SD from '../data/SouthDakota.json'
+
+const LineStyle = (route_name) => {
+
+  if (/Bleue/i.test(route_name))
+    return { 'color': '#0000CC', 'opacity': 0.5 }
+  if (/Orange/i.test(route_name)) 
+    return { 'color': '#CC5200', 'opacity': 0.5 }
+  if (/Jaune/i.test(route_name)) 
+    return { 'color': '#CCCC00', 'opacity': 0.5 }
+  if (/Verte/i.test(route_name)) 
+    return { 'color': '#00CC00', 'opacity': 0.5 }
+
+  return { 'color': '#6699CC', 'opacity': 0.5 }
+
+}
 
 const Layers = () => {
   const [borderData, setBorderData] = useState([STM])
-  const [popupContent, setPopupContent] = useState('')
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-  const [popupOpen, setPopupOpen] = useState(false)
 
   const map = useMapEvents({
     zoomend: () => {
@@ -32,27 +39,6 @@ const Layers = () => {
   })
 
 
-
-  const onMouseEvent = (event, arg) => {
-    switch (args.type) {
-      case 'over':
-        event.target.setStyle({ fillOpacity: 0.5 })
-        setPopupContent(args.routeName)
-  
-        // Set the position of the popup to the cursor
-        setPosition({ x: event.clientX, y: event.clientY })
-    
-        // Open the popup
-        setPopupOpen(true)
-        break
-      case 'out':
-        event.target.setStyle({ fillOpacity: 0.0 })
-        setPopupOpen(false)
-        break
-      default:
-        break
-    }
-  }
 
   return (
     <>
@@ -69,54 +55,39 @@ const Layers = () => {
             url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
           />
         </LayersControl.BaseLayer>
-        {borderData.map((data) => {
+        {borderData.map((data, index) => {
 
           let itemList=[]
+          let idx = 0
           data.features.forEach( (feature) => {
+                  ++idx
                   const geojson = feature.geometry
                   const overlay_name = feature.properties.headsign + " - " + feature.properties.route_name
                   const route_name = feature.properties.route_name
-                  const color = (route_name) => { 
-                    switch (true)
-                    {
-                       case /blue/i.test(feature.properties.route_name): return 'blue'
-                       case /blue/i.test(feature.properties.route_name): return 'orange'
-                       case /blue/i.test(feature.properties.route_name): return 'yellow'
-                       case /blue/i.test(feature.properties.route_name): return 'green'
-                       default:
-                        return '#6699CC' // blue-gray
-                    }
-                  }
+                  let myStyle  = LineStyle(route_name)       
                   
                   itemList.push(
-                    <Popup
-                    content={popupContent}
-                    position="top center"
-                    open={popupOpen}
-                    style={{ position: 'absolute', top: position.y, left: position.x }}
-                    >
-             
+                    <>
                       <LayersControl.Overlay checked name={overlay_name}>
-                        <LayerGroup>
+                        <FeatureGroup>
                           <GeoJSON 
-                            key={overlay_name} 
-                            data={geojson} 
-                            pathOptions={{ color: {color} }}
-                            eventHandlers={{
-                              mouseover: (event, type, route_name) => onMouseEvent(event, 'over', route_name),
-                              mouseout: (event, type, route_name) => onMouseEvent(event, 'out', route_name),
-                            }}
-                          >
-                          </GeoJSON>
-                      </LayerGroup>
+                            key={overlay_name + '.' + idx} 
+                            data={geojson}
+                            style={myStyle} 
+                          />  
+                          <Tooltip sticky={true}>
+                            {route_name}
+                          </Tooltip> 
+                      </FeatureGroup>
                     </LayersControl.Overlay>
-                    </Popup>
+                    
+                    </>
                     )
           })
           
           return (
             <>
-                       {itemList}
+              {itemList}
             </>
           )
         })}
